@@ -7,8 +7,7 @@ import PopularProducts from "./_components/PopularProducts";
 export default function Home() {
   return (
    <div>
-    {/* Header */}
-    <Header/>
+
     {/* Hero */}
     <Hero/>
 
