@@ -1,7 +1,7 @@
 "use client"
 import { UserDetailContext } from '@/context/UserDetailContext';
 import React, { useState } from 'react'
-import { User, } from './_components/Header';
+import Header, { User, } from './_components/Header';
 
 function Provider({
   children,
@@ -13,6 +13,8 @@ function Provider({
         <div>
             {/* @ts-ignore */}
             <UserDetailContext.Provider value={{userDetail,setUserDetail}}>
+                {/* Header */}
+                <Header/>
             {children}
             </UserDetailContext.Provider>
             
