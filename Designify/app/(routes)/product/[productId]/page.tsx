@@ -7,11 +7,13 @@ import { Palette } from 'lucide-react';
 import Image from 'next/image';
 import { useParams } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
+import ProductCustomizeStudio from '../_components/ProductCustomizeStudio';
 
 function ProductDetail() {
     const { productId } = useParams();
     const [product, setProduct] = useState<Product>();
     const [loading, setLoading] = useState(false);
+    const [enableCustomizeStudio, setEnableCustomizeStudio] = useState(false);
 
     useEffect(() => {
         productId && GetProductById();
@@ -30,7 +32,9 @@ function ProductDetail() {
         <div className='grid grid-cols-1 md:grid-cols-2 gap-10 my-20'>
         <div className='flex items-center justify-center border rounded-2xl'>
             {/* Image */}
-            {product? <Image src={product?.productImage[0]?.url} alt={product?.title} width={400} height={400}/>
+            {product?
+            !enableCustomizeStudio ? <Image src={product?.productImage[0]?.url} alt={product?.title} width={400} height={400}/> : 
+            <ProductCustomizeStudio product={product} />
             :<Skeleton className='w-full h-[300px]'/>
             }
         </div>
@@ -50,8 +54,8 @@ function ProductDetail() {
                         <Button variant={'outline'}>XL</Button>
                     </div>
                 </div>
-                <Button size={'lg'}><Palette/> Customize </Button>
-                <Button size={'lg'} variant={'outline'}> Add To Cart </Button>
+                {!enableCustomizeStudio && <Button size={'lg'} onClick={() => setEnableCustomizeStudio(true)}> Customize </Button>}
+                <Button size={'lg'} variant={enableCustomizeStudio ? 'outline' : 'default' }> Add To Cart </Button>
             </div>
                 : <div className='space-y-3'>
                     <Skeleton className='w-full h-[20px]'/>
