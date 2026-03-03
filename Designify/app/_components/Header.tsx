@@ -45,16 +45,34 @@ function Header() {
   const [user, setUser] = useState<User>();
   const  { UserDetail, setUserDetail}= useContext(UserDetailContext)
 
+  // useEffect(() => {
+  //   if (typeof window !== undefined) {
+  //     //@ts-ignore
+  //     const tokenResponse = JSON?.parse(localStorage?.getItem('tokenResponse') ?? {});
+  //     if (tokenResponse) {
+  //       GetUserProfile(tokenResponse?.access_token);
+  //     }
+  //   }
+  // }
+  // )
+
   useEffect(() => {
-    if (typeof window !== undefined) {
-      //@ts-ignore
-      const tokenResponse = JSON?.parse(localStorage?.getItem('tokenResponse') ?? {});
-      if (tokenResponse) {
-        GetUserProfile(tokenResponse?.access_token);
+  if (typeof window !== "undefined") {
+    const stored = localStorage.getItem("tokenResponse");
+
+    if (stored) {
+      try {
+        const tokenResponse = JSON.parse(stored);
+
+        if (tokenResponse?.access_token) {
+          GetUserProfile(tokenResponse.access_token);
+        }
+      } catch (error) {
+        console.error("Invalid JSON in localStorage");
       }
     }
   }
-  )
+}, []);
 
   const googleLogin = useGoogleLogin({
     onSuccess: async (tokenResponse) => {
