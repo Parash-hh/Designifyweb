@@ -6,15 +6,19 @@ import axios from 'axios';
 import { Palette } from 'lucide-react';
 import Image from 'next/image';
 import { useParams } from 'next/navigation'
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import ProductCustomizeStudio from '../_components/ProductCustomizeStudio';
+import { CartContext } from '@/context/CartContext';
+import { UserDetailContext } from '@/context/UserDetailContext';
 
 function ProductDetail() {
     const { productId } = useParams();
     const [product, setProduct] = useState<Product>();
     const [loading, setLoading] = useState(false);
     const [enableCustomizeStudio, setEnableCustomizeStudio] = useState(false);
-
+    const{cart,setCart}=useContext(CartContext);
+      const  { UserDetail, setUserDetail}= useContext(UserDetailContext)
+    
     useEffect(() => {
         productId && GetProductById();
     }, [productId])
@@ -25,6 +29,18 @@ function ProductDetail() {
         console.log(result.data);
         setProduct(result.data);
         setLoading(false);
+    }
+
+    const AddToCart=()=> {
+        setCart((prev:any)=>[...prev,({
+            design:'',
+            products:product,
+            userEmail:UserDetail?.email
+
+        } )])
+        //save to DB
+        
+
     }
 
   return (
@@ -55,7 +71,7 @@ function ProductDetail() {
                     </div>
                 </div>
                 {!enableCustomizeStudio && <Button size={'lg'} onClick={() => setEnableCustomizeStudio(true)}> Customize </Button>}
-                <Button size={'lg'} variant={enableCustomizeStudio ? 'outline' : 'default' }> Add To Cart </Button>
+                <Button size={'lg'} onClick={(AddToCart)} variant={enableCustomizeStudio ? 'outline' : 'default' }> Add To Cart </Button>
             </div>
                 : <div className='space-y-3'>
                     <Skeleton className='w-full h-[20px]'/>

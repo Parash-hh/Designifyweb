@@ -1,5 +1,6 @@
 "use client"
 import { Button } from '@/components/ui/Button'
+import { CartContext } from '@/context/CartContext'
 import { UserDetailContext } from '@/context/UserDetailContext'
 import { useGoogleLogin } from '@react-oauth/google'
 import axios from 'axios'
@@ -44,6 +45,7 @@ function Header() {
 
   const [user, setUser] = useState<User>();
   const  { UserDetail, setUserDetail}= useContext(UserDetailContext)
+  const {cart,setCart}=useContext(CartContext);
 
   // useEffect(() => {
   //   if (typeof window !== undefined) {
@@ -111,6 +113,15 @@ function Header() {
     });
     console.log(result.data);
   }
+  useEffect(() => {
+    user && GetCartList();
+  }, [user] )
+
+  const GetCartList=async()=>{
+    const result=await axios.get('/api/cart?emsil='+user?.email);
+    console.log(result.data);
+    setCart(result);
+  }
 
   return  (
     <div className='flex items-center justify-between gap-4'>
@@ -121,7 +132,9 @@ function Header() {
         ))}
       </ul>
       <div className='flex gap-3 items-center'>
-        <ShoppingCart />
+         <div className='flex gap-2 items-center'>
+        <ShoppingCart /> <span className='p-1 bg-gray-100 px-2 rounded-4xl'>{cart?.length?? 0}</span> 
+        </div>
         {!user ? <Button onClick={() => googleLogin()}>Sign In/Sign up</Button>
           :
          <Image src={user?.picture} alt={user.name} width={37} height={38} className='rounded-full'/>
