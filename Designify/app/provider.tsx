@@ -9,15 +9,15 @@ function Provider({
 }: Readonly<{
   children: React.ReactNode;
 }> ){
-    const [userDetail,setUserDetail]=useState <User|undefined>(undefined);
-    const[cart,setCart]=useState([]);
+    const [userDetail, setUserDetail] = useState <User | undefined>(undefined);
+    const [cart, setCart] = useState([]);
 
-
+    
 
     return(
         <div>
             {/* @ts-ignore */}
-              <UserDetailContext.Provider value={{userDetail,setUserDetail}}>
+              <UserDetailContext.Provider value={{ userDetail, setUserDetail}}>
                 <CartContext.Provider value={{ cart, setCart}}>
                 {/* Header */}
                 <Header/>

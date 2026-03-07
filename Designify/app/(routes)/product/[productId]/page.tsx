@@ -16,8 +16,9 @@ function ProductDetail() {
     const [product, setProduct] = useState<Product>();
     const [loading, setLoading] = useState(false);
     const [enableCustomizeStudio, setEnableCustomizeStudio] = useState(false);
-    const{cart,setCart}=useContext(CartContext);
-      const  { UserDetail, setUserDetail}= useContext(UserDetailContext)
+    const {cart,setCart}=useContext(CartContext);
+    const { userDetail, setUserDetail}= useContext(UserDetailContext)
+    const [designUrl, setDesignUrl] = useState<string>();
     
     useEffect(() => {
         productId && GetProductById();
@@ -31,15 +32,24 @@ function ProductDetail() {
         setLoading(false);
     }
 
-    const AddToCart=()=> {
-        setCart((prev:any)=>[...prev,({
-            design:'',
-            products:product,
-            userEmail:UserDetail?.email
-
-        } )])
+    const AddToCart= async ()=> {
+        console.log(designUrl);
+        setCart((prev:any)=>[
+            ...(Array.isArray(prev) ? prev : []), 
+            {
+                design:designUrl,
+                products:product,
+                userEmail:userDetail?.email
+            }
+        ])
         //save to DB
         
+        const result = await axios.post('/api/cart', {
+            product:product,
+            designUrl:designUrl,
+            userEmail:userDetail?.email
+        })
+        console.log(result.data);
 
     }
 
@@ -48,10 +58,12 @@ function ProductDetail() {
         <div className='grid grid-cols-1 md:grid-cols-2 gap-10 my-20'>
         <div className='flex items-center justify-center border rounded-2xl'>
             {/* Image */}
-            {product?
-            !enableCustomizeStudio ? <Image src={product?.productImage[0]?.url} alt={product?.title} width={400} height={400}/> : 
-            <ProductCustomizeStudio product={product} />
-            :<Skeleton className='w-full h-[300px]'/>
+            {product ?
+                !enableCustomizeStudio ? <Image src={product?.productImage[0]?.url} 
+                    alt={product?.title} width={400} height={400}/> : 
+                    <ProductCustomizeStudio product={product} 
+                    setDesignUrl={(url:string)=>setDesignUrl(url)}/>
+                : <Skeleton className='w-full h-[300px]'/>
             }
         </div>
 
@@ -71,7 +83,7 @@ function ProductDetail() {
                     </div>
                 </div>
                 {!enableCustomizeStudio && <Button size={'lg'} onClick={() => setEnableCustomizeStudio(true)}> Customize </Button>}
-                <Button size={'lg'} onClick={(AddToCart)} variant={enableCustomizeStudio ? 'outline' : 'default' }> Add To Cart </Button>
+                <Button size={'lg'} onClick={()=>AddToCart()} variant={!enableCustomizeStudio ? 'outline' : 'default' }> Add To Cart </Button>
             </div>
                 : <div className='space-y-3'>
                     <Skeleton className='w-full h-[20px]'/>

@@ -44,37 +44,39 @@ export type User = {
 function Header() {
 
   const [user, setUser] = useState<User>();
-  const  { UserDetail, setUserDetail}= useContext(UserDetailContext)
+  const  { userDetail, setUserDetail}= useContext(UserDetailContext) 
   const {cart,setCart}=useContext(CartContext);
 
-  // useEffect(() => {
-  //   if (typeof window !== undefined) {
-  //     //@ts-ignore
-  //     const tokenResponse = JSON?.parse(localStorage?.getItem('tokenResponse') ?? {});
-  //     if (tokenResponse) {
-  //       GetUserProfile(tokenResponse?.access_token);
-  //     }
-  //   }
-  // }
-  // )
-
   useEffect(() => {
-  if (typeof window !== "undefined") {
-    const stored = localStorage.getItem("tokenResponse");
-
-    if (stored) {
+    if (typeof window !== undefined) {
       try {
-        const tokenResponse = JSON.parse(stored);
-
-        if (tokenResponse?.access_token) {
-          GetUserProfile(tokenResponse.access_token);
+        //@ts-ignore
+        const tokenResponse = JSON?.parse(localStorage?.getItem('tokenResponse') ?? {});
+        if (tokenResponse) {
+          GetUserProfile(tokenResponse?.access_token);
         }
-      } catch (error) {
-        console.error("Invalid JSON in localStorage");
       }
+      catch (e) {}
     }
-  }
-}, []);
+  }, [])
+
+//   useEffect(() => {
+//   if (typeof window !== "undefined") {
+//     const stored = localStorage.getItem("tokenResponse");
+
+//     if (stored) {
+//       try {
+//         const tokenResponse = JSON.parse(stored);
+
+//         if (tokenResponse?.access_token) {
+//           GetUserProfile(tokenResponse.access_token);
+//         }
+//       } catch (error) {
+//         console.error("Invalid JSON in localStorage");
+//       }
+//     }
+//   }
+// }, []);
 
   const googleLogin = useGoogleLogin({
     onSuccess: async (tokenResponse) => {
@@ -118,7 +120,7 @@ function Header() {
   }, [user] )
 
   const GetCartList=async()=>{
-    const result=await axios.get('/api/cart?emsil='+user?.email);
+    const result=await axios.get('/api/cart?email='+user?.email);
     console.log(result.data);
     setCart(result);
   }
@@ -133,7 +135,7 @@ function Header() {
       </ul>
       <div className='flex gap-3 items-center'>
          <div className='flex gap-2 items-center'>
-        <ShoppingCart /> <span className='p-1 bg-gray-100 px-2 rounded-4xl'>{cart?.length?? 0}</span> 
+            <ShoppingCart /> <span className='p-1 bg-gray-100 px-2 rounded-4xl'>{cart?.length ?? 0}</span> 
         </div>
         {!user ? <Button onClick={() => googleLogin()}>Sign In/Sign up</Button>
           :
