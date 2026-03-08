@@ -6,6 +6,7 @@ import { useGoogleLogin } from '@react-oauth/google'
 import axios from 'axios'
 import { ShoppingCart } from 'lucide-react'
 import Image from 'next/image'
+import Link from 'next/link'
 import path from 'path'
 import React, { useContext, useEffect, useState } from 'react'
 
@@ -59,24 +60,6 @@ function Header() {
       catch (e) {}
     }
   }, [])
-
-//   useEffect(() => {
-//   if (typeof window !== "undefined") {
-//     const stored = localStorage.getItem("tokenResponse");
-
-//     if (stored) {
-//       try {
-//         const tokenResponse = JSON.parse(stored);
-
-//         if (tokenResponse?.access_token) {
-//           GetUserProfile(tokenResponse.access_token);
-//         }
-//       } catch (error) {
-//         console.error("Invalid JSON in localStorage");
-//       }
-//     }
-//   }
-// }, []);
 
   const googleLogin = useGoogleLogin({
     onSuccess: async (tokenResponse) => {
@@ -133,10 +116,10 @@ function Header() {
           <li key={index}>{item.name}</li>
         ))}
       </ul>
-      <div className='flex gap-3 items-center'>
-         <div className='flex gap-2 items-center'>
+      <div className='flex gap-7 items-center'>
+         <Link href={'/carts'} className='flex gap-2 items-center'>
             <ShoppingCart /> <span className='p-1 bg-gray-100 px-2 rounded-4xl'>{cart?.length ?? 0}</span> 
-        </div>
+        </Link>
         {!user ? <Button onClick={() => googleLogin()}>Sign In/Sign up</Button>
           :
          <Image src={user?.picture} alt={user.name} width={37} height={38} className='rounded-full'/>
