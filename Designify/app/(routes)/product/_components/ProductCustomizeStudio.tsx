@@ -4,7 +4,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import Image from 'next/image'
 import { Crop, GalleryVerticalEnd, ImageOff, ImageUpscale, Upload } from 'lucide-react'
 import { Canvas, FabricImage } from 'fabric'
-import { imagekit } from '@/lib/ImageKitInstance'
+import axios from 'axios'
 
 type Props = {
     product: Product,
@@ -73,34 +73,27 @@ function ProductCustomizeStudio({product, setDesignUrl}: Props) {
         canvasInstance.renderAll();
     }
 
-    const onHandleImageUpload=async(event: React.ChangeEvent<HTMLInputElement>)=>{
-        //Get file
-        const file=event.target.files?.[0];
-        //Upload to imagekit
-        if(file){
-            const uploadImageRef=await imagekit.upload({
-                //@ts-ignore
-                file:file,
-                fileName:file?.name,
-                isPublished:true,
-                useUniqueFileName:false
-            });
-            //show on canvas
-            //@ts-ignore 
-            const uploadedImageUrl=uploadImageRef.url;
-            console.log(uploadedImageUrl);
-            if(uploadedImageUrl){
-                setUploadedImage(uploadedImageUrl);
-                canvasInstance.clear();
-                canvasInstance.renderAll();
-                const canvasImageRef=await FabricImage.fromURL(uploadedImageUrl);
-                canvasImageRef.scaleX=0.1;
-                canvasImageRef.scaleY=0.1;
-                canvasInstance.add(canvasImageRef);
-                canvasInstance.renderAll();
-            }
+    const onHandleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('fileName', file.name);
+
+        const result = await axios.post('/api/imagekit', formData);
+        const uploadedImageUrl = result.data.url;
+
+        if (uploadedImageUrl) {
+            setUploadedImage(uploadedImageUrl);
+            canvasInstance.clear();
+            const canvasImageRef = await FabricImage.fromURL(uploadedImageUrl);
+            canvasImageRef.scaleX = 0.1;
+            canvasImageRef.scaleY = 0.1;
+            canvasInstance.add(canvasImageRef);
+            canvasInstance.renderAll();
         }
     }
+}
 
 const OnApplyAITransformation=(transformation:any,add:boolean)=>{
 
@@ -145,8 +138,8 @@ const OnApplyAITransformation=(transformation:any,add:boolean)=>{
         </label>
         <input type='file' id='uploadImage' className='hidden'onChange={onHandleImageUpload}/>
        
-       {AITransformOptions.map((item,index)=>( 
-        <div key = {index} className = {`flex flex-col p-5 items-center border rounded-lg hover:border-primary cursor-pointer hover:bg-fuchsia-100
+       {AITransformOptions.map((item)=>( 
+        <div key = {item.name} className = {`flex flex-col p-5 items-center border rounded-lg hover:border-primary cursor-pointer hover:bg-fuchsia-100
              ${uploadedImage.includes(item.imageKitTr)?'border-primary':null}
         `}
 

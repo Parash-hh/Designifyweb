@@ -34,7 +34,7 @@ function Carts() {
     const GetCartList=async()=>{
         const result=await axios.get('/api/cart?email=' + userDetail?.email);
         console.log(result.data);
-        setCart(result);
+        setCart(result.data);
     }
 
     const GetTotalCartAmount = () => {
@@ -56,7 +56,7 @@ function Carts() {
                 <div className="mt-8">
                     <ul className="space-y-4">
                     {cart?.map((cartItem: CartItem, index: number) => (
-                        <li className="flex items-center gap-4">
+                        <li key={cartItem.documentId ?? index} className="flex items-center gap-4">
                         <img
                         src={cartItem.products[0]?.productImage[0]?.url}
                         alt=""
@@ -69,7 +69,7 @@ function Carts() {
                         />
 
                         <div>
-                        <h3 className="text-sm text-gray-900">{cartItem?.products[0].title}</h3>
+                        <h3 className="text-sm text-gray-900">{cartItem?.products[0]?.title}</h3>
 
                         
                         </div>

@@ -38,7 +38,7 @@ function ProductDetail() {
             ...(Array.isArray(prev) ? prev : []), 
             {
                 design:designUrl,
-                products:product,
+                products:[product],
                 userEmail:userDetail?.email
             }
         ])
