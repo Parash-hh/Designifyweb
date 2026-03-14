@@ -35,8 +35,8 @@ function PopularProducts() {
     <div className='mt-10'>
        <h2 className='font-bold text-3xl'>Popular Products</h2>
        <div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 mt-5'>
-        {productList?.map((product: Product, index: number)=>(
-            <ProductCard product={product} key={index}/>
+        {productList?.map((product: Product)=>(
+            <ProductCard product={product} key={product.documentId}/>
         ))}
        </div>
     </div>

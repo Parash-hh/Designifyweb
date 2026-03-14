@@ -16,7 +16,7 @@ function Provider({
 
     return(
         <div>
-            {/* @ts-ignore */}
+            
               <UserDetailContext.Provider value={{ userDetail, setUserDetail}}>
                 <CartContext.Provider value={{ cart, setCart}}>
                 {/* Header */}

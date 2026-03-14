@@ -7,7 +7,7 @@ import axios from 'axios'
 import { ShoppingCart } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
-import path from 'path'
+
 import React, { useContext, useEffect, useState } from 'react'
 
 const menu = [
@@ -52,7 +52,7 @@ function Header() {
     if (typeof window !== undefined) {
       try {
         //@ts-ignore
-        const tokenResponse = JSON?.parse(localStorage?.getItem('tokenResponse') ?? {});
+        const tokenResponse = JSON.parse(localStorage?.getItem('tokenResponse') ?? '{}');
         if (tokenResponse) {
           GetUserProfile(tokenResponse?.access_token);
         }
@@ -64,7 +64,7 @@ function Header() {
   const googleLogin = useGoogleLogin({
     onSuccess: async (tokenResponse) => {
       console.log(tokenResponse);
-      localStorage.setItem('accessToken', JSON.stringify(tokenResponse))
+      localStorage.setItem('tokenResponse', JSON.stringify(tokenResponse))
       await GetUserProfile(tokenResponse.access_token);
       //save to DB/Strapi Backend
     },
@@ -76,7 +76,7 @@ function Header() {
     try {
       const userInfo = await axios.get(
         'https://www.googleapis.com/oauth2/v3/userinfo',
-        { headers: { Authorization: 'Bearer' + access_token } },
+        { headers: { Authorization: 'Bearer ' + access_token } },
       );
 
       console.log(userInfo);
@@ -105,15 +105,15 @@ function Header() {
   const GetCartList=async()=>{
     const result=await axios.get('/api/cart?email='+user?.email);
     console.log(result.data);
-    setCart(result);
+    setCart(result.data);
   }
 
   return  (
     <div className='flex items-center justify-between gap-4'>
       <Image src={'/logo.svg'} alt='Logo' width={80} height={300} />
       <ul className='flex gap-5'>
-        {menu.map((item, index) => (
-          <li key={index}>{item.name}</li>
+        {menu.map((item) => (
+          <li key={item.id}>{item.name}</li>
         ))}
       </ul>
       <div className='flex gap-7 items-center'>

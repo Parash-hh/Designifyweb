@@ -41,9 +41,11 @@ export async function POST(req:NextRequest) {
 }
 
 export async function DELETE(req:NextRequest) {
-    const {documentId} = await req.json();
-
-    const result = await axiosClient.delete('/carts/' + documentId)
-
-    return NextResponse.json(result.data);
+    try {
+        const {documentId} = await req.json();
+        const result = await axiosClient.delete('/carts/' + documentId)
+        return NextResponse.json(result.data);
+    } catch(e: any) {
+        return NextResponse.json(e?.response?.data, { status: e?.response?.status })
+    }
 }
