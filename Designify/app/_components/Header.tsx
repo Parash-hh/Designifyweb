@@ -7,8 +7,11 @@ import axios from 'axios'
 import { ShoppingCart } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+import { motion, AnimatePresence } from "framer-motion"
 
 import React, { useContext, useEffect, useState } from 'react'
+import { toast } from 'react-toastify'
 
 const menu = [
   {
@@ -47,6 +50,9 @@ function Header() {
   const [user, setUser] = useState<User>();
   const  { userDetail, setUserDetail}= useContext(UserDetailContext) 
   const {cart,setCart}=useContext(CartContext);
+  const [openProfile, setOpenProfile] = useState(false)
+  const [scrolled, setScrolled] = useState(false)
+  const router = useRouter()
 
   useEffect(() => {
     if (typeof window !== undefined) {
@@ -61,27 +67,61 @@ function Header() {
     }
   }, [])
 
+  useEffect(() => {
+  const handleClickOutside = () => {
+    setOpenProfile(false)
+  }
+
+  if (openProfile) {
+    window.addEventListener("click", handleClickOutside)
+  }
+
+  return () => {
+    window.removeEventListener("click", handleClickOutside)
+  }
+  }, [openProfile])
+
+  useEffect(() => {
+  const handleScroll = () => {
+    setScrolled(window.scrollY > 20)
+  }
+
+  window.addEventListener("scroll", handleScroll)
+
+  return () => {
+    window.removeEventListener("scroll", handleScroll)
+  }
+  }, [])
+
   const googleLogin = useGoogleLogin({
     onSuccess: async (tokenResponse) => {
-      console.log(tokenResponse);
+      console.log(tokenResponse); //can delete this line
       localStorage.setItem('tokenResponse', JSON.stringify(tokenResponse))
-      await GetUserProfile(tokenResponse.access_token);
+      await GetUserProfile(tokenResponse.access_token, true);
       //save to DB/Strapi Backend
     },
     onError: errorResponse => console.log(errorResponse),
   });
 
   //get user info
-  const GetUserProfile = async (access_token: string) => {
+  const GetUserProfile = async (access_token: string, showToast = false) => {
     try {
       const userInfo = await axios.get(
         'https://www.googleapis.com/oauth2/v3/userinfo',
         { headers: { Authorization: 'Bearer ' + access_token } },
       );
 
-      console.log(userInfo);
+      console.log(userInfo); //can delete this line
       setUser(userInfo?.data)
       setUserDetail(userInfo?.data)
+
+      if(showToast){
+        toast.success(`Welcome ${userInfo?.data?.name} 👋`, {
+          position: "top-right",
+          autoClose: 2000,
+        })
+      }
+
       SaveNewUser(userInfo?.data)
     }
     catch (e) {
@@ -108,8 +148,28 @@ function Header() {
     setCart(result.data);
   }
 
+  const handleLogout = () => {
+    localStorage.removeItem('tokenResponse')
+
+    setUser(undefined)
+    setUserDetail(null)
+    setCart([])
+
+    toast.success("Logged out successfully 👋")
+
+    setOpenProfile(false)
+    router.push('/')
+  }
+
   return  (
-    <div className='flex items-center justify-between gap-4'>
+    <div
+        className={`sticky top-0 z-50 flex items-center justify-between gap-4 px-6 py-3 transition-all duration-300
+        ${
+          scrolled
+            ? "backdrop-blur-xl bg-white/60 shadow-md border-b border-white/20"
+            : "bg-transparent"
+        }`}
+    >
       <Image src={'/logo.svg'} alt='Logo' width={80} height={300} />
       <ul className='flex gap-5'>
         {menu.map((item) => (
@@ -122,7 +182,43 @@ function Header() {
         </Link>
         {!user ? <Button onClick={() => googleLogin()}>Sign In/Sign up</Button>
           :
-         <Image src={user?.picture} alt={user.name} width={37} height={38} className='rounded-full'/>
+        <div className="relative">
+          <Image
+            src={user?.picture}
+            alt={user.name}
+            width={37}
+            height={38}
+            className="rounded-full cursor-pointer"
+            onClick={(e) => {
+              e.stopPropagation()
+              setOpenProfile(!openProfile)
+            }}
+          />
+
+        <AnimatePresence>
+          {openProfile && (
+            <motion.div
+              initial={{ opacity: 0, y: -10, scale: 0.95 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -10, scale: 0.95 }}
+              transition={{ duration: 0.2, ease: "easeOut" }}
+              className="absolute right-0 mt-2 w-44 backdrop-blur-2xl bg-white/50 shadow-2xl rounded-2xl border border-white/30 z-50"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="px-4 py-2 border-b text-sm text-gray-800">
+                {user?.name}
+              </div>
+
+              <button
+                onClick={handleLogout}
+                className="w-full text-left px-4 py-2 text-sm text-red-500 hover:bg-white/40 rounded-b-2xl"
+              >
+                Logout
+              </button>
+            </motion.div>
+          )}
+        </AnimatePresence>
+        </div>
       }
       </div>
     </div>
