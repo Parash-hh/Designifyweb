@@ -3,7 +3,9 @@ import { Product } from '@/app/_components/PopularProducts'
 import { CartContext } from '@/context/CartContext'
 import { UserDetailContext } from '@/context/UserDetailContext'
 import axios from 'axios'
+import { useRouter } from 'next/navigation'
 import React, { useContext } from 'react'
+import { toast } from 'react-toastify'
 
 type CartItem = {
     documentId: string,
@@ -16,6 +18,7 @@ function Carts() {
 
     const {cart, setCart} = useContext(CartContext);
     const  { userDetail, setUserDetail}= useContext(UserDetailContext)
+    const router = useRouter()
 
     console.log(cart);
 
@@ -33,7 +36,6 @@ function Carts() {
 
     const GetCartList=async()=>{
         const result=await axios.get('/api/cart?email=' + userDetail?.email);
-        console.log(result.data);
         setCart(result.data);
     }
 
@@ -134,10 +136,17 @@ function Carts() {
 
                         <div className="flex justify-end">
                         <a
-                            href="#"
-                            className="block rounded-sm bg-gray-700 px-5 py-3 text-sm text-gray-100 transition hover:bg-gray-600"
+                        onClick={() => {
+                            if (!userDetail?.email) {
+                            toast.error("Please Sign In to continue")
+                            router.push('/')
+                            return
+                            }
+                            router.push('/checkout')
+                        }}
+                        className="block rounded-sm bg-gray-700 px-5 py-3 text-sm text-gray-100 transition hover:bg-gray-600"
                         >
-                            Checkout
+                        Checkout
                         </a>
                         </div>
                     </div>
