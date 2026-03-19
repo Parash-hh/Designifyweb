@@ -29,12 +29,12 @@ const menu = [
   {
     id: 3,
     name: 'About Us',
-    path: '/'
+    path: '/about'
   },
   {
     id: 4,
     name: 'Contact Us',
-    path: '/'
+    path: '/contact'
   }
 ]
 
@@ -163,7 +163,7 @@ function Header() {
 
   return  (
     <div
-        className={`sticky top-0 z-50 flex items-center justify-between gap-4 px-6 py-3 transition-all duration-300
+        className={`sticky top-3 rounded-3xl z-50 flex items-center justify-between gap-4 px-6 py-3 transition-all duration-300
         ${
           scrolled
             ? "backdrop-blur-xl bg-white/60 shadow-md border-b border-white/20"
@@ -173,7 +173,11 @@ function Header() {
       <Image src={'/logo.svg'} alt='Logo' width={80} height={300} />
       <ul className='flex gap-5'>
         {menu.map((item) => (
-          <li key={item.id}>{item.name}</li>
+          <li key={item.id}>
+            <Link href={item.path} className='cursor-pointer hover:text-primary transition'>
+              {item.name}
+            </Link>
+            </li>
         ))}
       </ul>
       <div className='flex gap-7 items-center'>

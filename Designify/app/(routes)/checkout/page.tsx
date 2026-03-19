@@ -33,7 +33,7 @@ function Checkout() {
                 <h2 className='flex justify-between'>Tax (9%) : <span>$250.00</span></h2>
                 <hr></hr>
                 <h2 className='font-bold flex justify-between text-lg'>Total : <span>$350.00</span></h2>
-                <Button className='w-full flex items-center justify-center gap-2'>
+                <Button className='w-full flex items-center justify-center gap-2 cursor-pointer'>
                   Payment <ArrowRight size={18}/>
                 </Button>
             </div>

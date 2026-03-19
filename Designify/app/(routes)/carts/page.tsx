@@ -144,7 +144,7 @@ function Carts() {
                             }
                             router.push('/checkout')
                         }}
-                        className="block rounded-sm bg-gray-700 px-5 py-3 text-sm text-gray-100 transition hover:bg-gray-600"
+                        className="block rounded-sm bg-gray-700 px-5 py-3 text-sm text-gray-100 transition hover:bg-gray-600 cursor-pointer"
                         >
                         Checkout
                         </a>
