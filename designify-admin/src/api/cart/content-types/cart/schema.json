@@ -22,6 +22,9 @@
     },
     "design": {
       "type": "string"
+    },
+    "quantity": {
+      "type": "integer"
     }
   }
 }
