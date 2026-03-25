@@ -8,6 +8,7 @@ import axios from 'axios'
 import { toast } from 'react-toastify'
 import { useRouter } from 'next/navigation'
 import React, { useContext, useState } from 'react'
+import Footer from '@/app/_components/Footer'
 
 type CartItem = {
     documentId: string,
@@ -127,7 +128,7 @@ function Checkout() {
 
     return (
         <div className=''>
-            <h2 className='p-3 bg-primary text-lg md:text-xl font-bold text-center text-white'>Checkout</h2>
+            <h2 className='p-3 mt-3 rounded-xl bg-primary text-lg md:text-xl font-bold text-center text-white'>Checkout</h2>
             <div className='p-4 md:p-8 max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8'>
 
                 {/* ✅ Billing Details - one field per line */}
@@ -218,6 +219,7 @@ function Checkout() {
                     </div>
                 </div>
             </div>
+            <Footer/>
         </div>
     )
 }

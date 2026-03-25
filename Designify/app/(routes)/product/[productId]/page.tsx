@@ -10,6 +10,7 @@ import ProductCustomizeStudio from '../_components/ProductCustomizeStudio';
 import { CartContext } from '@/context/CartContext';
 import { UserDetailContext } from '@/context/UserDetailContext';
 import { toast } from 'react-toastify';
+import Footer from '@/app/_components/Footer';
 
 function ProductDetail() {
     const { productId } = useParams();
@@ -129,6 +130,7 @@ function ProductDetail() {
             </div>
 
             <PopularProducts />
+            <Footer/>
         </div>
     )
 }

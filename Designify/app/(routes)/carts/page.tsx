@@ -8,6 +8,7 @@ import { Minus, Plus, ShoppingBag } from 'lucide-react'
 import React, { useContext, useState } from 'react'
 import { toast } from 'react-toastify'
 import { Button } from '@/components/ui/Button'
+import Footer from '@/app/_components/Footer'
 
 type CartItem = {
     documentId: string,
@@ -165,6 +166,7 @@ function Carts() {
                     </div>
                 </div>
             </div>
+            <Footer/>
         </section>
     )
 }

@@ -1,4 +1,5 @@
 "use client"
+import Footer from '@/app/_components/Footer';
 import { Product } from '@/app/_components/PopularProducts';
 import ProductCard from '@/app/_components/ProductCard';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -49,7 +50,7 @@ function ProductList() {
     ))
     }
       </div>
-
+    <Footer/>
     </div>
   )
 }
