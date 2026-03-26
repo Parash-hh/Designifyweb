@@ -6,6 +6,7 @@ export async function GET(req: NextRequest) {
     const isPopular = searchParams.get('isPopular');
     const category = searchParams.get('category');
     const productId = searchParams.get('productId');
+    const search = searchParams.get('search');
 
     try {
         if(isPopular == '1'){
@@ -20,8 +21,13 @@ export async function GET(req: NextRequest) {
             const result = await axiosClient.get('/products/' + productId + "?populate=*");
             return NextResponse.json(result?.data?.data);
         }
+        else if(search) {
+            const result = await axiosClient.get(`/products?populate=*&filters[title][$containsi]=${encodeURIComponent(search)}`);
+            return NextResponse.json(result?.data?.data);
+        }
         else{
-            return NextResponse.json({});
+            const result = await axiosClient.get('/products?populate=*');
+            return NextResponse.json(result?.data?.data);
         }
     } catch(e: any) {
         return NextResponse.json(e?.response?.data, { status: e?.response?.status })
