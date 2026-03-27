@@ -239,7 +239,7 @@ function Header() {
       <ul className='hidden md:flex gap-5'>
         {menu.map((item) => (
           <li key={item.id}>
-            <Link href={item.path} className='cursor-pointer hover:text-primary transition'>
+            <Link href={item.path} className='cursor-pointer font-bold hover:text-red-400 transition'>
               {item.name}
             </Link>
             </li>
