@@ -11,15 +11,17 @@ type Props = {
 
 function ProductCard({product}: Props) {
   return (
-    <div className='p-5 border rounded-xl flex flex-col items-center hover:border-primary cursor-pointer'>
+    <div className='border rounded-xl p-2 sm:p-4 flex flex-col justify-between items-center text-center cursor-pointer hover:shadow-lg transition-shadow duration-300 h-full'>
+      <div className="w-full h-[120px] sm:h-[180px] flex items-center justify-center">
       <Image src={product.productImage[0]?.url} alt={product.title} 
       width={150} 
       height={150}
-      className='h-[150px] w-full aspect-square object-contain'
+      className='max-h-full w-auto object-contain'
       />
-      <h2 className='font-medium text-lg'>{product.title}</h2>
+      </div>
+      <h2 className='font-medium text-xs sm:text-base mt-2 line-clamp-2 min-h-[32px] sm:min-h-[48px]'>{product.title}</h2>
       <Link href={'/product/' + product?.documentId} className='w-full'>
-          <Button className='w-full mt-2'> <Palette /> Customize</Button>
+          <Button className='w-full mt-2 text-xs sm:text-sm py-1.5 sm:py-2 flex items-center justify-center gap-1 sm:gap-2'> <Palette size={14} className='sm:w-[18px] sm:h-[18px]' /> Customize</Button>
       </Link>
     </div>
   )

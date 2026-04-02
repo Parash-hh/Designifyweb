@@ -57,7 +57,7 @@ function ProductsPageContent() {
         )}
       </div>
 
-      <div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 mt-7'>
+      <div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-4 p-2 sm:p-5'>
         {loading ? (
           [1, 2, 3, 4, 5, 6, 7, 8].map((item) => (
             <div key={item} className="p-5 border rounded-xl flex flex-col items-center gap-4">

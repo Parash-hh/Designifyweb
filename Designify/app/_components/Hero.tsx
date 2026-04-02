@@ -4,33 +4,60 @@ import Link from 'next/link'
 
 function Hero() {
   return (
-      <section className="bg-white lg:grid ">
-  <div className="mx-auto w-screen max-w-7xl px-4 py-16 sm:px-6 sm:py-24 md:grid md:grid-cols-2 md:items-center md:gap-28 lg:px-8 ">
-    <div className="max-w-prose text-left">
-      <h1 className="text-4xl font-bold text-gray-900 sm:text-5xl">
-        Design , 
-        <strong className="text-primary"> Customize </strong>
-        & Get It Delivered
-      </h1>
-      <p className="mt-4 text-base text-pretty text-gray-700 sm:text-lg/relaxed">
-        Easily personalize your print-on-demand products with just a few clicks. Our user-friendly design tool allows you to unleash your creativity and create unique, customized products that reflect your style and personality.
-      </p>
+    <section className="bg-white">
+      <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-16 lg:px-8">
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 items-center gap-8 md:gap-16 lg:gap-24">
+          
+          {/* IMAGE FIRST ON MOBILE */}
+          <div className="order-1 md:order-2 flex justify-center">
+            <Image
+              src="/hero.png"
+              alt="Hero Image"
+              width={500}
+              height={500}
+              className="w-[250px] sm:w-[350px] md:w-[400px] lg:w-[500px] h-auto object-contain"
+              priority
+            />
+          </div>
 
-      <div className="mt-4 flex gap-4 sm:mt-6">
-        <Link className="inline-block rounded border border-indigo-600 bg-indigo-600 px-5 py-3 font-medium text-white shadow-sm transition-colors hover:bg-indigo-700" href='/products'>
-          Start Designing
-        </Link>
+          {/* TEXT */}
+          <div className="order-2 md:order-1 text-center md:text-left">
+            
+            <h1 className="text-2xl sm:text-4xl lg:text-5xl font-bold text-gray-900 leading-tight">
+              Design,
+              <span className="text-primary"> Customize </span>
+              & Get It Delivered
+            </h1>
 
-        <Link className="inline-block rounded border border-gray-200 px-5 py-3 font-medium text-gray-700 shadow-sm transition-colors hover:bg-gray-50 hover:text-gray-900" href='/products'>
-          Explore Products
-        </Link>
+            <p className="mt-3 sm:mt-4 text-sm sm:text-base lg:text-lg text-gray-700 leading-relaxed max-w-xl mx-auto md:mx-0">
+              Easily personalize your print-on-demand products with just a few clicks.
+              Create unique designs that reflect your style and personality.
+            </p>
+
+            {/* BUTTONS */}
+            <div className="mt-4 sm:mt-6 flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center md:justify-start">
+              
+              <Link
+                href="/products"
+                className="w-full sm:w-auto text-center rounded bg-indigo-600 px-5 py-2.5 sm:py-3 text-sm sm:text-base font-medium text-white shadow-sm hover:bg-indigo-700 transition"
+              >
+                Start Designing
+              </Link>
+
+              <Link
+                href="/products"
+                className="w-full sm:w-auto text-center rounded border border-gray-300 px-5 py-2.5 sm:py-3 text-sm sm:text-base font-medium text-gray-700 hover:bg-gray-50 transition"
+              >
+                Explore Products
+              </Link>
+
+            </div>
+
+          </div>
+        </div>
       </div>
-    </div>
-
-    <Image src={'/hero.png'} alt="Hero Image" width={450} height={450} />
-
-  </div>
-</section>
+    </section>
   )
 }
 
