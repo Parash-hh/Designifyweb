@@ -4,7 +4,7 @@ import { CartContext } from '@/context/CartContext'
 import { UserDetailContext } from '@/context/UserDetailContext'
 import { useGoogleLogin } from '@react-oauth/google'
 import axios from 'axios'
-import { ShoppingCart, Search, X, Loader2, Package } from 'lucide-react'
+import { ShoppingCart, Search, X, Loader2, Menu, Package } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
@@ -20,13 +20,11 @@ const menu = [
     name: 'Home',
     path: '/'
   },
-
   {
     id: 2,
     name: 'Products',
     path: '/products'
   },
-
   {
     id: 3,
     name: 'About Us',
@@ -43,16 +41,16 @@ export type User = {
   email: string,
   name: string,
   picture: string
-
 }
 
 function Header() {
 
   const [user, setUser] = useState<User>();
-  const  { userDetail, setUserDetail}= useContext(UserDetailContext) 
-  const {cart,setCart}=useContext(CartContext);
+  const { userDetail, setUserDetail } = useContext(UserDetailContext)
+  const { cart, setCart } = useContext(CartContext);
   const [openProfile, setOpenProfile] = useState(false)
   const [scrolled, setScrolled] = useState(false)
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const router = useRouter()
 
   // Search state
@@ -72,36 +70,36 @@ function Header() {
           GetUserProfile(tokenResponse?.access_token);
         }
       }
-      catch (e) {}
+      catch (e) { }
     }
   }, [])
 
   useEffect(() => {
-  const handleClickOutside = (e: MouseEvent) => {
-    setOpenProfile(false)
-    // Close search dropdown when clicking outside
-    if (searchRef.current && !searchRef.current.contains(e.target as Node)) {
-      setShowResults(false)
+    const handleClickOutside = (e: MouseEvent) => {
+      setOpenProfile(false)
+      setMobileMenuOpen(false)
+      if (searchRef.current && !searchRef.current.contains(e.target as Node)) {
+        setShowResults(false)
+      }
     }
-  }
 
-  window.addEventListener("click", handleClickOutside)
+    window.addEventListener("click", handleClickOutside)
 
-  return () => {
-    window.removeEventListener("click", handleClickOutside)
-  }
+    return () => {
+      window.removeEventListener("click", handleClickOutside)
+    }
   }, [openProfile])
 
   useEffect(() => {
-  const handleScroll = () => {
-    setScrolled(window.scrollY > 20)
-  }
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 20)
+    }
 
-  window.addEventListener("scroll", handleScroll)
+    window.addEventListener("scroll", handleScroll)
 
-  return () => {
-    window.removeEventListener("scroll", handleScroll)
-  }
+    return () => {
+      window.removeEventListener("scroll", handleScroll)
+    }
   }, [])
 
   // Debounced search
@@ -160,15 +158,13 @@ function Header() {
 
   const googleLogin = useGoogleLogin({
     onSuccess: async (tokenResponse) => {
-      console.log(tokenResponse); //can delete this line
+      console.log(tokenResponse);
       localStorage.setItem('tokenResponse', JSON.stringify(tokenResponse))
       await GetUserProfile(tokenResponse.access_token, true);
-      //save to DB/Strapi Backend
     },
     onError: errorResponse => console.log(errorResponse),
   });
 
-  //get user info
   const GetUserProfile = async (access_token: string, showToast = false) => {
     try {
       const userInfo = await axios.get(
@@ -176,11 +172,11 @@ function Header() {
         { headers: { Authorization: 'Bearer ' + access_token } },
       );
 
-      console.log(userInfo); //can delete this line
+      console.log(userInfo);
       setUser(userInfo?.data)
       setUserDetail(userInfo?.data)
 
-      if(showToast){
+      if (showToast) {
         toast.success(`Welcome ${userInfo?.data?.name} 👋`, {
           position: "top-right",
           autoClose: 2000,
@@ -192,10 +188,9 @@ function Header() {
     catch (e) {
       localStorage.setItem('tokenResponse', '')
     }
-
   }
 
-  const SaveNewUser= async (user:User) => {
+  const SaveNewUser = async (user: User) => {
     const result = await axios.post('/api/users', {
       name: user.name,
       email: user.email,
@@ -203,61 +198,55 @@ function Header() {
     });
     console.log(result.data);
   }
+
   useEffect(() => {
     user && GetCartList();
-  }, [user] )
+  }, [user])
 
-  const GetCartList=async()=>{
-    const result=await axios.get('/api/cart?email='+user?.email);
+  const GetCartList = async () => {
+    const result = await axios.get('/api/cart?email=' + user?.email);
     console.log(result.data);
     setCart(result.data);
   }
 
   const handleLogout = () => {
     localStorage.removeItem('tokenResponse')
-
     setUser(undefined)
     setUserDetail(null)
     setCart([])
-
     toast.success("Logged out successfully 👋")
-
     setOpenProfile(false)
     router.push('/')
   }
 
-  return  (
+  return (
     <div
-        className={`sticky top-3 rounded-3xl z-50 flex items-center justify-between gap-4 px-6 py-3 transition-all duration-300
-        ${
-          scrolled
-            ? "backdrop-blur-xl bg-white/60 shadow-md border-b border-white/20"
-            : "bg-transparent"
+      className={`sticky top-3 rounded-3xl z-50 flex items-center justify-between gap-4 px-6 py-3 transition-all duration-300
+        ${scrolled
+          ? "backdrop-blur-xl bg-white/60 shadow-md border-b border-white/20"
+          : "bg-transparent"
         }`}
     >
-      <Image src={'/logo.svg'} alt='Logo' width={80} height={300} />
-      <ul className='hidden md:flex gap-5'>
+      <Link href='/'>
+        <Image src={'/ss.png'} alt='Logo' width={48} height={48} className='object-contain h-15 w-auto' />
+      </Link>
+
+      {/* ✅ Desktop nav — My Orders shown only when logged in */}
+      <ul className='hidden md:flex gap-5 items-center'>
         {menu.map((item) => (
           <li key={item.id}>
             <Link href={item.path} className='cursor-pointer font-bold hover:text-red-400 transition'>
               {item.name}
             </Link>
-            </li>
-        ))}
-        {user && (
-          <li>
-            <Link href='/my-orders' className='cursor-pointer font-bold hover:text-red-400 transition flex items-center gap-1.5'>
-              <Package className='w-4 h-4' />
-              My Orders
-            </Link>
           </li>
-        )}
+        ))}
       </ul>
-      <div className='flex gap-4 items-center'>
+
+      <div className='flex gap-3 items-center'>
         {/* Search Bar */}
         <div ref={searchRef} className='relative' onClick={(e) => e.stopPropagation()}>
           <form onSubmit={handleSearchSubmit} className='relative'>
-            <div className='flex items-center gap-2 bg-gray-100/80 backdrop-blur-sm rounded-full px-4 py-2 border border-transparent focus-within:border-primary/30 focus-within:bg-white/90 focus-within:shadow-lg transition-all duration-300 w-[180px] focus-within:w-[260px]'>
+            <div className='flex items-center gap-2 bg-gray-100/80 backdrop-blur-sm rounded-full px-3 py-2 border border-transparent focus-within:border-primary/30 focus-within:bg-white/90 focus-within:shadow-lg transition-all duration-300 w-9 focus-within:w-[200px] md:w-[180px] md:focus-within:w-[260px] overflow-hidden'>
               <Search className='w-4 h-4 text-gray-400 shrink-0' />
               <input
                 type='text'
@@ -346,58 +335,127 @@ function Header() {
           </AnimatePresence>
         </div>
 
-         <Link href={'/carts'} className='flex gap-2 items-center'>
-            <ShoppingCart /> <span className='p-1 bg-gray-100 px-2 rounded-4xl'>{cart?.length ?? 0}</span> 
+        {/* Cart & Auth — desktop */}
+        <Link href={'/carts'} className='hidden md:flex gap-2 items-center'>
+          <ShoppingCart /> <span className='p-1 bg-gray-100 px-2 rounded-4xl'>{cart?.length ?? 0}</span>
         </Link>
-        {!user ? <Button onClick={() => googleLogin()}>Sign In/Sign up</Button>
-          :
-        <div className="relative">
-          <Image
-            src={user?.picture}
-            alt={user.name}
-            width={37}
-            height={38}
-            className="rounded-full cursor-pointer"
-            onClick={(e) => {
-              e.stopPropagation()
-              setOpenProfile(!openProfile)
-            }}
-          />
 
-        <AnimatePresence>
-          {openProfile && (
-            <motion.div
-              initial={{ opacity: 0, y: -10, scale: 0.95 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: -10, scale: 0.95 }}
-              transition={{ duration: 0.2, ease: "easeOut" }}
-              className="absolute right-0 mt-2 w-44 backdrop-blur-2xl bg-white/50 shadow-2xl rounded-2xl border border-white/30 z-50"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <div className="px-4 py-2 border-b text-sm text-gray-800">
-                {user?.name}
+        <div className='hidden md:block'>
+          {!user
+            ? <Button onClick={() => googleLogin()}>Sign In/Sign up</Button>
+            : (
+              <div className="relative">
+                <Image
+                  src={user?.picture}
+                  alt={user.name}
+                  width={37}
+                  height={38}
+                  className="rounded-full cursor-pointer"
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    setOpenProfile(!openProfile)
+                  }}
+                />
+
+                {/* ✅ Profile dropdown — with My Orders */}
+                <AnimatePresence>
+                  {openProfile && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -10, scale: 0.95 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: -10, scale: 0.95 }}
+                      transition={{ duration: 0.2, ease: "easeOut" }}
+                      className="absolute right-0 mt-2 w-48 backdrop-blur-2xl bg-white/50 shadow-2xl rounded-2xl border border-white/30 z-50 overflow-hidden"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <div className="px-4 py-2.5 border-b border-gray-200/50 text-sm font-medium text-gray-800">
+                        {user?.name}
+                      </div>
+
+                      <Link
+                        href='/my-orders'
+                        onClick={() => setOpenProfile(false)}
+                        className="flex items-center gap-2 w-full px-4 py-2.5 text-sm text-gray-700 hover:bg-white/40 transition border-b border-gray-200/50"
+                      >
+                        <Package className='w-4 h-4' />
+                        My Orders
+                      </Link>
+
+                      <button
+                        onClick={handleLogout}
+                        className="w-full text-left px-4 py-2.5 text-sm text-red-500 hover:bg-white/40 rounded-b-2xl transition"
+                      >
+                        Logout
+                      </button>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
+            )
+          }
+        </div>
 
+        {/* Mobile menu toggle */}
+        <button
+          className='md:hidden flex items-center justify-center'
+          onClick={(e) => {
+            e.stopPropagation()
+            setMobileMenuOpen(!mobileMenuOpen)
+          }}
+        >
+          {mobileMenuOpen ? <X className='w-6 h-6' /> : <Menu className='w-6 h-6' />}
+        </button>
+      </div>
+
+      {/* Mobile dropdown */}
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: -8, scale: 0.96 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -8, scale: 0.96 }}
+            transition={{ duration: 0.2, ease: "easeOut" }}
+            className='absolute top-full left-0 right-0 mt-2 mx-3 flex flex-col gap-1 md:hidden backdrop-blur-2xl bg-white/90 shadow-2xl rounded-2xl border border-white/40 z-[60] p-3'
+            onClick={(e) => e.stopPropagation()}
+          >
+            {menu.map((item) => (
+              <Link
+                key={item.id}
+                href={item.path}
+                className='block px-4 py-2 font-bold hover:text-red-400 hover:bg-primary/5 rounded-xl transition'
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                {item.name}
+              </Link>
+            ))}
+
+            {/* ✅ My Orders in mobile menu — only when logged in */}
+            {user && (
               <Link
                 href='/my-orders'
-                onClick={() => setOpenProfile(false)}
-                className="block w-full px-4 py-2 text-sm text-gray-700 hover:bg-white/40 transition-colors"
+                className='flex items-center gap-2 px-4 py-2 font-bold hover:text-red-400 hover:bg-primary/5 rounded-xl transition'
+                onClick={() => setMobileMenuOpen(false)}
               >
-                📦 My Orders
+                <Package className='w-4 h-4' />
+                My Orders
               </Link>
+            )}
 
-              <button
-                onClick={handleLogout}
-                className="w-full text-left px-4 py-2 text-sm text-red-500 hover:bg-white/40 rounded-b-2xl"
-              >
-                Logout
-              </button>
-            </motion.div>
-          )}
-        </AnimatePresence>
-        </div>
-      }
-      </div>
+            <div className='border-t border-gray-200/50 mt-1 pt-2 flex items-center justify-between px-2'>
+              <Link href={'/carts'} className='flex gap-2 items-center px-2 py-1' onClick={() => setMobileMenuOpen(false)}>
+                <ShoppingCart className='w-5 h-5' /> <span className='p-1 bg-gray-100 px-2 rounded-4xl'>{cart?.length ?? 0}</span>
+              </Link>
+              {!user
+                ? <Button onClick={() => { googleLogin(); setMobileMenuOpen(false) }}>Sign In/Sign up</Button>
+                : <div className='flex items-center gap-2'>
+                  <span className='text-sm text-gray-700'>{user?.name}</span>
+                  <button onClick={handleLogout} className='text-sm text-red-500 px-3 py-1 rounded-xl hover:bg-red-50 transition'>Logout</button>
+                </div>
+              }
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   )
 }
