@@ -24,11 +24,6 @@ const AITransformOptions = [
         imageKitTr:'e-upscale'
     },
     {
-        name:'Smart Crop',
-        icon:Crop,
-        imageKitTr:'fo-auto'
-    },
-    {
         name:'Shadow',
         icon:GalleryVerticalEnd,
         imageKitTr:'e-shadow'

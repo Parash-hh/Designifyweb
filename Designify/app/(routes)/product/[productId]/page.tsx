@@ -92,15 +92,7 @@ function ProductDetail() {
                         <h2 className='font-bold text-3xl'>{product?.title}</h2>
                         <h2 className='font-bold text-3xl'>₹{product?.pricing}</h2>
                         <p className='text-gray-500'>{product?.description}</p>
-                        <div>
-                            <h2 className='text-lg'>Size</h2>
-                            <div className='flex gap-3'>
-                                <Button variant={'outline'}>S</Button>
-                                <Button variant={'outline'}>M</Button>
-                                <Button variant={'outline'}>L</Button>
-                                <Button variant={'outline'}>XL</Button>
-                            </div>
-                        </div>
+                        
                         {!enableCustomizeStudio &&
                             <Button size={'lg'} onClick={() => setEnableCustomizeStudio(true)}>
                                 Customize

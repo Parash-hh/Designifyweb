@@ -40,7 +40,7 @@ function Hero() {
               
               <Link
                 href="/products"
-                className="w-full sm:w-auto text-center rounded bg-indigo-600 px-5 py-2.5 sm:py-3 text-sm sm:text-base font-medium text-white shadow-sm hover:bg-indigo-700 transition"
+                className="w-full sm:w-auto text-center rounded bg-primary px-5 py-2.5 sm:py-3 text-sm sm:text-base font-medium text-white shadow-sm hover:bg-gray-700 transition"
               >
                 Start Designing
               </Link>

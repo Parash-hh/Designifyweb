@@ -33,12 +33,6 @@
     "isFeatured": {
       "type": "boolean"
     },
-    "size": {
-      "type": "dynamiczone",
-      "components": [
-        "size.t-shirt-size"
-      ]
-    },
     "longDescription": {
       "type": "text"
     },

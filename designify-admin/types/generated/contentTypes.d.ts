@@ -552,7 +552,6 @@ export interface ApiProductProduct extends Struct.CollectionTypeSchema {
       true
     >;
     publishedAt: Schema.Attribute.DateTime;
-    size: Schema.Attribute.DynamicZone<['size.t-shirt-size']>;
     title: Schema.Attribute.String;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &

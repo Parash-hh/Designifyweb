@@ -32,7 +32,7 @@ export default function FeatureClean3D() {
             Why Choose Us
           </h2>
           <p className="text-gray-500 mt-2">
-            Built for creators and businesses
+            Built for individuals, creators and businesses
           </p>
         </div>
 
