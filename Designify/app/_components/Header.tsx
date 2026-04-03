@@ -4,7 +4,7 @@ import { CartContext } from '@/context/CartContext'
 import { UserDetailContext } from '@/context/UserDetailContext'
 import { useGoogleLogin } from '@react-oauth/google'
 import axios from 'axios'
-import { ShoppingCart, Search, X, Loader2 } from 'lucide-react'
+import { ShoppingCart, Search, X, Loader2, Package } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
@@ -244,6 +244,14 @@ function Header() {
             </Link>
             </li>
         ))}
+        {user && (
+          <li>
+            <Link href='/my-orders' className='cursor-pointer font-bold hover:text-red-400 transition flex items-center gap-1.5'>
+              <Package className='w-4 h-4' />
+              My Orders
+            </Link>
+          </li>
+        )}
       </ul>
       <div className='flex gap-4 items-center'>
         {/* Search Bar */}
@@ -369,6 +377,14 @@ function Header() {
               <div className="px-4 py-2 border-b text-sm text-gray-800">
                 {user?.name}
               </div>
+
+              <Link
+                href='/my-orders'
+                onClick={() => setOpenProfile(false)}
+                className="block w-full px-4 py-2 text-sm text-gray-700 hover:bg-white/40 transition-colors"
+              >
+                📦 My Orders
+              </Link>
 
               <button
                 onClick={handleLogout}
